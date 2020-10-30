@@ -1,0 +1,11 @@
+#pragma once
+#define WHITE_PLAYER "white_player"
+#define BLACK_PLAYER "black_player"
+#define WHITE "W"
+#define BLACK "B"
+#define KING "KI"
+#define QUEEN "QU"
+#define BISHOP "BI"
+#define PAWN "PA"
+#define ROOK "RO"
+#define KNIGHT "KN"
