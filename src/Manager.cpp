@@ -62,7 +62,12 @@ void Manager::player_move(int x,int y, string pawn_name){
         if(chess_board.is_present(x,y)){
             capture_piece(p->get_symbol(),x, y);
         }
-        update_state(x,y,p);
+        if(can_promote_piece(p,x,y)){
+            promote_piece(p,x,y);
+        }
+        else{ 
+            update_state(x,y,p);
+        }
         // next player section 
         update_for_check();
         chess_board.print_board();
@@ -141,7 +146,7 @@ bool Manager::can_block(int x,int y){
     // discover check
     auto king = name_map[KING+player];
     for(auto e : name_map){
-        if(e.second != king and e.second->get_color()==player and e.second->is_present({x,y}) and has_discover_check(e.second,x,y)){
+        if(e.second != king and e.second->get_color()==player and e.second->is_present({x,y}) and !has_discover_check(e.second,x,y)){
                 return true;
         }
     }
@@ -150,11 +155,22 @@ bool Manager::can_block(int x,int y){
 
 bool Manager::has_discover_check(Piece* p, int x, int y){
     pair<int,int> pos = p->get();
+    Piece *d = NULL;
+    if(chess_board.is_present(x,y)) {
+        d = name_map[chess_board.get(x,y)];
+        name_map.erase(chess_board.get(x,y));
+    }
     p->set(x,y);
+    chess_board.move(pos.first,pos.second,x,y);
     update_possible_moves();
     bool res = false;
     if(!checking_pieces().empty()) res = true;
     p->set(pos.first,pos.second);
+    chess_board.move(x,y,pos.first,pos.second);
+    if(d){
+        name_map[d->get_symbol()] = d;
+        chess_board.set(x,y,d->get_symbol());
+    }
     update_possible_moves();
     return res;
 }
@@ -170,10 +186,44 @@ vector<Piece*> Manager::checking_pieces(){
     return pieces;
 }
 
+bool Manager::can_promote_piece(Piece *p,int x,int y){
+    pair<int,int> pos = p->get();
+    return  p->get_symbol().find(PAWN)!=string::npos and (x == 0 and p->get_color() == BLACK) or (x == 7 and p->get_color() == WHITE);
+}
+
 bool Manager::is_valid_move(int x, int y, Piece* piece){
     for(auto move : piece->get_moves()){
         if(move.first == x and move.second == y) return true;
      }
     piece->print_possible_moves();
     return false;
+}
+
+Piece* Manager::piece_selection(int x, int y){
+    char name;
+    int new_index = 10 + promoted_count[player]++;
+    while(true){
+        cout<<"promote pawn to (Q, B, K, P, R) :";
+        cin>>name;
+        cout<<name<<endl;
+        switch (name){
+            case 'Q': return new Queen(player,new_index,x,y);
+            case 'B' : return new Bishop(player,new_index,x,y);
+            case 'K' : return new Knight(player,new_index,x,y);
+            case 'R' : return new Rook(player,new_index,x,y);
+            case 'P' : return new Pawn(player,new_index,x,y);
+        }
+    }
+    return NULL;
+}
+
+void Manager::promote_piece(Piece* &p, int x,int y){
+        auto pos = p->get();
+        chess_board.move(pos.first,pos.second,x,y);
+        name_map.erase(p->get_symbol());
+        p = piece_selection(x,y);
+        name_map[p->get_symbol()] = p;
+        chess_board.set(x,y,p->get_symbol());
+        p->possible_moves(get_direction(p),chess_board);
+        switch_player();
 }

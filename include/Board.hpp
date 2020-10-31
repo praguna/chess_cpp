@@ -20,7 +20,7 @@ class Board{
             return board[i][j];
         }
         bool is_present(int i, int j){
-            return board[i][j]!=BLACK and board[i][j]!=WHITE;
+            return  i<8 and i>=0 and j<8 and j>=0 and board[i][j]!=BLACK and board[i][j]!=WHITE;
         }
         string color_from_pos(int i, int j){
             if(i&1) return (j&1)?BLACK:WHITE;

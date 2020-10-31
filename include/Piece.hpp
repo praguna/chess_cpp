@@ -75,8 +75,11 @@ class Bishop:public Piece{
 };
 
 class Queen:public Piece{
+    private:
+        int index;
     public:
         Queen(string color,int x,int y):Piece(QUEEN+color,x,y){}
+        Queen(string color,int index,int x,int y):Piece(QUEEN+to_string(index)+color,x,y),index(index){}
         vector<pair<int,int> > possible_moves(short pawn_dir,Board board);
 };
 

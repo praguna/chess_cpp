@@ -8,6 +8,7 @@ class Manager{
         string player_name = WHITE_PLAYER;
         unordered_map<string,vector<Piece *>> captured;
         unordered_map<string,Piece*> name_map;
+        unordered_map<string,int> promoted_count;
         Board chess_board;
         bool check_mate = false;
         bool check = false;
@@ -37,6 +38,9 @@ class Manager{
         bool is_valid_move(int x,int y, Piece* piece);
         void update_for_check();
         bool is_check_mate(vector<Piece*> &checking_pieces);
+        bool can_promote_piece(Piece *p,int x,int y);
+        Piece* piece_selection(int x,int y);
+        void promote_piece(Piece* &p, int x,int y);
     public:
         Manager();
         void run_cmd();
