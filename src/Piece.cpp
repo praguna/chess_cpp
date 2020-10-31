@@ -55,8 +55,13 @@ bool Piece::block_piece_handle_default(Board board,string curr_type,int x, int y
      return false;
 }
 
-vector<pair<int,int> >  King::possible_moves(short pawn_dir,Board board){
+vector<pair<int,int> >  King::possible_moves(short allow_castle,Board board){
         populate_possible_moves_default(board,1);
+        // if(!board.has_moved(symbol) and allow_castle){
+        //     int r = board.default_king_row(board.get_piece_type(pos.first,pos.second));
+        //     if(!board.has_moved(r,0) and !board.num_pieces_between_hor(pos.first,0,r)) moves.push_back({pos.first,pos.second-2});
+        //     if(!board.has_moved(r,7) and !board.num_pieces_between_hor(pos.first,7,r)) moves.push_back({pos.first,pos.second+2});
+        // }
         return moves;
     }
 
@@ -73,7 +78,7 @@ vector<pair<int,int> >  Pawn::possible_moves(short pawn_dir,Board board){
 
 
 
-vector<pair<int,int> > Knight::possible_moves(short pawn_dir,Board board){
+vector<pair<int,int> > Knight::possible_moves(short ignore,Board board){
        string curr_type = board.get_piece_type(pos.first,pos.second); 
        if(pos.first + 2 < 8 and pos.second + 1 < 8 and board.not_matches_type_if_present(curr_type, pos.first + 2, pos.second + 1)) 
          moves.push_back(make_pair(pos.first+2,pos.second+1));
@@ -86,17 +91,17 @@ vector<pair<int,int> > Knight::possible_moves(short pawn_dir,Board board){
        return moves; 
 }
 
-vector<pair<int,int> > Bishop::possible_moves(short pawn_dir,Board board){
+vector<pair<int,int> > Bishop::possible_moves(short ignore,Board board){
        populate_possible_moves_default(board,7,true,false);
        return moves;
 }
 
-vector<pair<int,int> > Queen::possible_moves(short pawn_dir,Board board){
+vector<pair<int,int> > Queen::possible_moves(short ignore,Board board){
        populate_possible_moves_default(board,7,true,true);
        return moves;
 }
 
-vector<pair<int,int> > Rook::possible_moves(short pawn_dir,Board board){
+vector<pair<int,int> > Rook::possible_moves(short ignore,Board board){
        populate_possible_moves_default(board,7,false,true);
        return moves;
 }

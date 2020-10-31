@@ -33,7 +33,7 @@ class Manager{
         bool is_valid_piece(Piece* p){
             return p->get_symbol().find(player)!=string::npos;
         }
-        void update_possible_moves();
+        int update_possible_moves();
         void player_move(int x, int y, string piece_name);
         bool is_valid_move(int x,int y, Piece* piece);
         void update_for_check();

@@ -8,6 +8,7 @@ class Board{
     private:
         vector<vector<string> > board;
         unordered_map<string,vector<string> > capture; 
+        unordered_map<string,bool > moved;
         void print_captured_piece(string player);
     public:
         Board();
@@ -38,5 +39,18 @@ class Board{
         }
         void capture_piece(string player, string name){
             capture[player].push_back(name);
+        }
+        int num_pieces_between_hor(int y1, int y2,int x);
+        bool has_moved(string symbol){
+            return moved[symbol];
+        }
+        bool has_moved(int x,int y){
+            return is_present(x,y) and moved[get(x,y)];
+        }
+        void set_moved(string symbol){
+            moved[symbol] = true;
+        }
+        int default_king_row(string player){
+            return player==WHITE?0 : 7;
         }
  }; 

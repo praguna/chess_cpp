@@ -34,3 +34,14 @@ void Board::print_board(){
     cout<<"\n\nWhite Side \n"<<endl;
     print_captured_piece(WHITE);
 }
+
+int Board::num_pieces_between_hor(int y1, int y2,int x){
+    int i = y1, j = y2, res = 0;
+    if(y1 > y2){
+        i = y2, j = y1;
+    }
+    while(++i < j){
+        if(is_present(x,i)) ++res;
+    }
+    return res;
+}

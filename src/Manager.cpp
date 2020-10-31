@@ -27,11 +27,13 @@ void Manager::initialize_board(int r1,int r2,string val){
     }
 }
 
-void Manager::update_possible_moves(){
+int Manager::update_possible_moves(){
+    int num_moves = 0;
     for(auto e : name_map){
         e.second->reset_moves();
-        e.second->possible_moves(get_direction(e.second),chess_board);
+        num_moves+=e.second->possible_moves(get_direction(e.second),chess_board).size();
     }
+    return num_moves;
 }
 
 void Manager::run_cmd(){
@@ -42,13 +44,16 @@ void Manager::run_cmd(){
             cout<<"\n\n\t*** Check Mate "<<player_name<<" has own !!! ***"<<endl;
             break;
         }
+        if(update_possible_moves() == 0){
+            cout<<"*** Draw Match !!! ***"<<endl;
+            break;
+        }
         cout<<"Turn : "<<get_player_name()<<endl;
         cout<<"move (pawn name), (row integer), (column integer) :";
         cin>>pawn_name;
         if(pawn_name == "exit") break;
         cin>>x>>y;
         cout<<pawn_name<<" "<<x<<" "<<y<<" "<<endl;
-        update_possible_moves();
         player_move(x,y,pawn_name);
     }
     
@@ -78,6 +83,7 @@ void Manager::update_state(int x, int y, Piece *p){
         auto pos = p->get();
         chess_board.move(pos.first,pos.second,x,y);
         p->set(x,y);
+        chess_board.set_moved(p->get_symbol());
         p->possible_moves(get_direction(p),chess_board);
         switch_player();
 }
