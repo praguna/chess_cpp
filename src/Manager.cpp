@@ -70,8 +70,11 @@ void Manager::player_move(int x,int y, string pawn_name){
         if(can_promote_piece(p,x,y)){
             promote_piece(p,x,y);
         }
+        else if(can_castle(p,x,y)){
+            update_for_castle(p,x,y);
+        }
         else{ 
-            update_state(x,y,p);
+            update_state(p,x,y);
         }
         // next player section 
         update_for_check();
@@ -79,13 +82,35 @@ void Manager::player_move(int x,int y, string pawn_name){
     }
 }
 
-void Manager::update_state(int x, int y, Piece *p){    
+bool Manager::can_castle(Piece* p, int x, int y){
+      pair<int,int> pos = p->get();
+      int inc = y < pos.second?-1 : 1;  
+      return p->get_symbol().find(KING)!=string::npos and x == chess_board.default_king_row(player) 
+        and abs(pos.second - y) == 2 and !has_discover_check(p,x,y) and !has_discover_check(p,x,y - inc);
+}
+
+void Manager::update_for_castle(Piece* king, int x, int y){
+        auto king_pos = king->get();
+        int r = y < king_pos.second ? 0 : 7;
+        int inc = y < king_pos.second?-1 : 1;  
+        Piece* rook = name_map[chess_board.get(x,r)];
+        auto rook_pos = rook->get();
+        update(king,x,y);
+        update(rook,x,y-inc);
+        switch_player();
+}
+
+void Manager::update_state(Piece *p,int x, int y){    
+        update(p,x,y);
+        switch_player();
+}
+
+void Manager::update(Piece* p,int x,int y){
         auto pos = p->get();
         chess_board.move(pos.first,pos.second,x,y);
         p->set(x,y);
         chess_board.set_moved(p->get_symbol());
         p->possible_moves(get_direction(p),chess_board);
-        switch_player();
 }
 
 void Manager::capture_piece(string val,int x,int y){

@@ -26,7 +26,7 @@ class Manager{
         short get_direction(Piece* p){
             return p->get_color() == BLACK ? -1 : 1;
         }
-        void update_state(int x,int y,Piece* p);
+        void update_state(Piece *p,int x, int y);
 
         void capture_piece(string symbol,int x,int y);
 
@@ -41,6 +41,9 @@ class Manager{
         bool can_promote_piece(Piece *p,int x,int y);
         Piece* piece_selection(int x,int y);
         void promote_piece(Piece* &p, int x,int y);
+        bool can_castle(Piece* p, int x ,int y);
+        void update_for_castle(Piece* p, int x, int y);
+        void update(Piece* p,int x,int y);
     public:
         Manager();
         void run_cmd();

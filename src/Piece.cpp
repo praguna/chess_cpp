@@ -57,11 +57,11 @@ bool Piece::block_piece_handle_default(Board board,string curr_type,int x, int y
 
 vector<pair<int,int> >  King::possible_moves(short allow_castle,Board board){
         populate_possible_moves_default(board,1);
-        // if(!board.has_moved(symbol) and allow_castle){
-        //     int r = board.default_king_row(board.get_piece_type(pos.first,pos.second));
-        //     if(!board.has_moved(r,0) and !board.num_pieces_between_hor(pos.first,0,r)) moves.push_back({pos.first,pos.second-2});
-        //     if(!board.has_moved(r,7) and !board.num_pieces_between_hor(pos.first,7,r)) moves.push_back({pos.first,pos.second+2});
-        // }
+        if(!board.has_moved(symbol) and allow_castle){
+            int r = board.default_king_row(board.get_piece_type(pos.first,pos.second));
+            if(!board.has_moved(r,0) and !board.num_pieces_between_hor(pos.second,0,r)) moves.push_back({pos.first,pos.second-2});
+            if(!board.has_moved(r,7) and !board.num_pieces_between_hor(pos.second,7,r)) moves.push_back({pos.first,pos.second+2});
+        }
         return moves;
     }
 
