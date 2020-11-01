@@ -3,4 +3,4 @@
 
 run with : ``` bash run.sh ```
 
-![Logo](output.png)
+![Logo](demo_1.png)
